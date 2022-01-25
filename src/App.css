@@ -1,0 +1,22 @@
+body {
+    font-family: sans-serif;
+}
+
+.menu {
+    display: flex;
+    width: 100vw;
+}
+
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    width: 1000px;
+    height: 100px;
+    background-color: lightgray;
+    margin: 5px;
+}
+
+.num-container {
+    display: flex;
+    flex-direction: row;
+}

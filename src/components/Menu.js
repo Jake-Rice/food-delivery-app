@@ -1,51 +1,70 @@
 import React, { useState } from 'react'
+import '../App.css'
 
 const Menu = () => {
-    const menuItems = ["Burger", "Fries", "Shake", "Chips"]
-    let menuObjArr = [];
-    menuItems.forEach((e) => { 
-        menuObjArr.push({ "name": e, "num": 0 })
-    })
-    const [order, setOrder] = useState(menuObjArr)
+    const [order, setOrder] = useState([
+        {name: "Burger", num: 0},
+        {name: "Fries", num: 0},
+        {name: "Shake", num: 0},
+        {name: "Chips", num: 0}
+    ])
+    const [showNum, setShowNum] = useState(Array(order.length).fill(false))
     const handleChange = event => {
-        if (/^\d+$/.test(event.target.value)) update(event.target.id.substring(5), event.target.value)
+        if (/^\d+$/.test(event.target.value) || event.target.value=="") update(event.target.id.substring(5), event.target.value)
     }
-    const handleAdd = event => {
-        update(event.target.name.substring(5), "add")
+    const handleAdd = index => {
+        update(index, "add")
     }
-    const handleSubtract = event => {
-        update(event.target.name.substring(6), "subtract")
+    const handleSubtract = index => {
+        update(index, "subtract")
     }
 
     const update = (index, operation) => {
         let newOrder = [...order]
-        if (operation=="add") {
+        if (operation==="add") {
             newOrder[index].num++
         }
-        else if (operation=="subtract") {
-            if (newOrder[index].num!=0) {
+        else if (operation==="subtract") {
+            if (newOrder[index].num!==0) {
                 newOrder[index].num--
             }
+        }
+        else if (operation==="") {
+            console.log("blank")
+            newOrder[index].num = ""
         }
         else {
             newOrder[index].num = Number(operation)
         }
+
+        let newShowNumArr = [...showNum]
+        if (!showNum[index] && newOrder[index].num>0) {
+            newShowNumArr[index] = true
+        }
+        else if (showNum[index] && newOrder[index].num===0) {
+            newShowNumArr[index] = false
+        }
+        setShowNum(newShowNumArr)
         setOrder(newOrder)
     }
 
     return (
         <div>
             <h1>Hamburger Store</h1>
-            <form>
+            <form className="menu">
                 {
-                    menuItems.map((item, index) => {
+                    order.map((item, index) => {
                         return (
-                            <div key={"item-"+index}>
-                                <label>{item}</label>
-                                <br/>
-                                <input name={"minus-"+index} type="button" value="-" onClick={handleSubtract} />
-                                <input id={"item-"+index} name={item} value={order[index].num ? order[index].num : 0} onChange={handleChange} />
-                                <input name={"plus-"+index} type="button" value="+" onClick={handleAdd} />
+                            <div key={"item-"+index} name={"item-"+index} onClick={() => {order[index].num==0 && handleAdd(index)}} className={"menu-item"}>
+                                <label>{item.name}</label>                                    
+                                {showNum[index] &&
+                                    <div className={"num-container"} onClick={e => e.stopPropagation()}>
+                                        <input name={"minus-"+index} type="button" value="-" onClick={() => handleSubtract(index)} />
+                                        <input id={"item-"+index} name={item.name} value={order[index].num!==0 ? order[index].num : ""} onChange={handleChange} onBlur={() => {if (order[index].num==="") update(index, 0)}} />
+                                        <input name={"plus-"+index} type="button" value="+" onClick={() => handleAdd(index)} />
+                                        <input name={"remove-"+index} type="button" value="Remove Item" onClick={() => update(index, 0)} />
+                                    </div>
+                                }
                             </div>
                         )
                     })
