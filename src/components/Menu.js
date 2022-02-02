@@ -49,27 +49,35 @@ const Menu = () => {
     }
 
     return (
-        <div>
-            <h1>Hamburger Store</h1>
-            <form className="menu">
+        <div  className="menu-page">
+            <div className="menu-title">
+                <h1>Hamburger Store</h1>
+            </div>
+            <div className={"menu-container"}>
+            <form className={"menu"}>
                 {
                     order.map((item, index) => {
                         return (
                             <div key={"item-"+index} name={"item-"+index} onClick={() => {order[index].num==0 && handleAdd(index)}} className={"menu-item"}>
                                 <label>{item.name}</label>                                    
                                 {showNum[index] &&
-                                    <div className={"num-container"} onClick={e => e.stopPropagation()}>
-                                        <input name={"minus-"+index} type="button" value="-" onClick={() => handleSubtract(index)} />
-                                        <input id={"item-"+index} name={item.name} value={order[index].num!==0 ? order[index].num : ""} onChange={handleChange} onBlur={() => {if (order[index].num==="") update(index, 0)}} />
-                                        <input name={"plus-"+index} type="button" value="+" onClick={() => handleAdd(index)} />
-                                        <input name={"remove-"+index} type="button" value="Remove Item" onClick={() => update(index, 0)} />
-                                    </div>
+                                    <>
+                                        <div className={"num-container"} onClick={e => e.stopPropagation()}>
+                                            <input name={"minus-"+index} type="button" value="-" onClick={() => handleSubtract(index)} className={"add-sub-button"}/>
+                                            <input id={"item-"+index} name={item.name} value={order[index].num!==0 ? order[index].num : ""} onChange={handleChange} onBlur={() => {if (order[index].num==="") update(index, 0)}} className={"number-field"}/>
+                                            <input name={"plus-"+index} type="button" value="+" onClick={() => handleAdd(index)} className={"add-sub-button"}/>
+                                        </div>
+                                        <div className={"remove-button-container"} onClick={e => e.stopPropagation()}>
+                                            <input name={"remove-"+index} type="button" value="Remove Item" onClick={() => update(index, 0)} />
+                                        </div>
+                                    </>
                                 }
                             </div>
                         )
-                    })
+                    })                    
                 }
             </form>
+            </div>
         </div>
     )
 }
